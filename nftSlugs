@@ -1,0 +1,6 @@
+kubz-relic
+notorious-fool-academy
+bananas
+
+
+"start": "concurrently \"react-scripts start\" \"nodemon backend/backend.js\"",

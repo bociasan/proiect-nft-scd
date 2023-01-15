@@ -7,8 +7,9 @@ async function fetchNftStatsBySlug({slug}) {
 
 async function fetchNftDetailsBySlug({slug}) {
     let res = await sdk.retrievingASingleCollection({collection_slug: slug})
+        .catch(error => ({error: true}))
     // console.log(res)
-    return res.data.collection
+    return res.error? res : res.data.collection
 }
 
 function createCollectionObjectFromStats(collection) {

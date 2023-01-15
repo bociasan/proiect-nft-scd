@@ -11,12 +11,17 @@ const collectionService = {
         console.log(slug)
         if (slug){
             const collectionFetch = await fetchNftDetailsBySlug({slug})
-            const object = createCollectionObjectFromDetails(collectionFetch)
-            // console.log(object)
-            // success({message:'success'})
-            collectionModel.create(object)
-                .then(data => success(data))
-                .catch(error => fail(error))
+            // console.log(collectionFetch)
+            if (!collectionFetch.error){
+                const object = createCollectionObjectFromDetails(collectionFetch)
+                // console.log(object)
+                // success({message:'success'})
+                collectionModel.create(object)
+                    .then(data => success(data))
+                    .catch(error => fail(error))
+            } else {
+                fail({message: 'not found'})
+            }
         } else {
             fail({message: 'slug is undefined'})
         }
@@ -32,10 +37,10 @@ const collectionService = {
             .then(data => success(data))
             .catch(error => fail(error))
     },
-    getRecordBySlug: (slug, success, fail)=> {
+    getRecordBySlug: async (slug, success, fail)=> {
         // console.log(slug)
         collectionModel.find({slug: slug})
-            .then(data => success(data))
+            .then(data => success(data[0]))
             .catch(error => fail(error))
     },
     getAllRecords: (success, fail)=> {
@@ -59,21 +64,21 @@ const collectionService = {
             .then(data => success(data))
             .catch(error => fail(error))
     },
-    updateInitialRecordsBySlug: (slug, collection, success, fail) => {
-        collectionModel.updateOne({slug: slug}, {
-            $currentDate: {
-                // lastModified: true,
-                "updateTime": { $type: "date" }
-            },
-            $set:{
-                name: collection.name,
-                slug: collection.slug,
-                image_url: collection.image_url,
-                large_image_url: collection.large_image_url
-            }}, {upsert: true})
-            .then(data => success(data))
-            .catch(error => fail(error))
+    updateRecordBySlugFromOpensea: async (slug, success, fail) => {
+        // console.log(slug)
+        if (slug) {
+            const collectionFetch = await fetchNftDetailsBySlug({slug})
+            const object = createCollectionObjectFromDetails(collectionFetch)
+            await collectionModel.updateOne({slug: object.slug}, {
+                $set: object
+            }, {upsert: true})
+                .then(data => success(data, object))
+                .catch(error => fail(error))
+        } else {
+            fail({message: 'slug is undefined'})
+        }
     },
+
     getCollectionNames: (success, fail) => {
         collectionModel.find()
             .then(data => success(data.map(collection => {return {slug:collection.slug,name:collection.name}})))

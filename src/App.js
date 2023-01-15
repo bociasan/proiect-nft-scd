@@ -26,9 +26,9 @@ function App() {
 
   return (
     <Container className="App" maxWidth={"xl"} display="flex" align='center'>
-        <Box display='flex' flexDirection='row' justifyContent='center'>
+        <Box display='flex' flexDirection='row' justifyContent='center' alignItems='center'>
             <SearchBar searchText={searchText} setSearchText={setSearchText} updateCollectionList={updateCollectionList}/>
-            <IconButton color="primary" sx={{p: '10px'}} aria-label="add" onClick={updateCollectionList}>
+            <IconButton color="primary" sx={{p: '10px', height: 50}} aria-label="add" onClick={updateCollectionList}>
                 <ReplayIcon/>
             </IconButton>
         </Box>

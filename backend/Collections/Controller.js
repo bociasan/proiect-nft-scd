@@ -16,12 +16,16 @@ collectionRouter.route('/nft-get-collection-names').get(getCollectionNames);
 
 function insertCollection(request, response) {
     const value = request.body;
-    // console.log(value)
-    collectionService.insertRecord(
-        value,
-        data => response.status(201).json(data),
-        error => response.status(400).json(error),
-    );
+    console.log(value)
+    if (value){
+        collectionService.insertRecord(
+            value,
+            data => response.status(201).json(data),
+            error => response.status(400).json(error),
+        );
+    }else {
+        response.status(400).json({message:'slug cannot be empty'})
+    }
 }
 
 function createCollectionBySlug(request, response) {
